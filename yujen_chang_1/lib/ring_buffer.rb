@@ -45,7 +45,7 @@ class RingBuffer
     raise "index out of bounds" if self.length == 0
 
     shift_val = @store[@start_idx]
-    @start_idx += 1;
+    @start_idx += 1
     @length -= 1
     shift_val
   end
