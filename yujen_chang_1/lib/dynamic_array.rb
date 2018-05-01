@@ -19,6 +19,7 @@ class DynamicArray
   def []=(index, value)
     check_index(index)
     @store[index] = value
+    @length += 1
   end
 
   # O(1)
