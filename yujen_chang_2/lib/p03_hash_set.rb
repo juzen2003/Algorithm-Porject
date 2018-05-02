@@ -26,9 +26,9 @@ class HashSet
 
   private
 
-  def [](num)
-    # optional but useful; return the bucket corresponding to `num`
-    @store[num.hash % num_buckets]
+  def [](key)
+    # optional but useful; return the bucket corresponding to `key`
+    @store[key.hash % num_buckets]
   end
 
   def num_buckets
