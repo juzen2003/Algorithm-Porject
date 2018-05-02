@@ -19,10 +19,11 @@ class Node
     @prev.next = @next
   end
 end
-
+# find: O(n), insert: either push or unshift O(1)
+# delete: O(1)
 class LinkedList
   include Enumerable
-  
+
   def initialize
     @head = Node.new
     @tail = Node.new
@@ -88,12 +89,16 @@ class LinkedList
     end
   end
 
+  #  return for later use
   def remove(key)
     self.each do |node|
       if key == node.key
         node.remove
+        return node.val
       end
     end
+
+    nil
   end
 
   def each(&prc)
