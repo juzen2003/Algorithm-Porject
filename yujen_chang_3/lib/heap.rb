@@ -33,8 +33,8 @@ class BinaryMinHeap
 
   public
   def self.child_indices(len, parent_index)
-    if (parent_index * 2 + 1) > len-1
-      nil
+    if (parent_index * 2 + 1) > len - 1
+      []
     elsif (parent_index * 2 + 2) > len - 1
       [parent_index * 2 + 1]
     else
@@ -54,15 +54,15 @@ class BinaryMinHeap
     # get children indices
     children_idx = BinaryMinHeap.child_indices(len, parent_idx)
 
-    # base case: return array if children_indices is nil or all children nodes are larger than parent
-    return array if children_idx == nil || children_idx.all?{|idx| prc.call(array[parent_idx], array[idx]) <= 0}
+    # base case: return array if all children nodes are larger than parent
+    return array if children_idx.all?{|idx| prc.call(array[parent_idx], array[idx]) <= 0}
 
     # there is at least one children node smaller than parent
     # p "children_idx: #{children_idx}"
 
     if children_idx.length == 1
       next_idx = children_idx[0]
-    else
+    elsif children_idx.length == 2
       # if prc.call(children_idx[0], children_idx[1]) == -1
       if prc.call(array[children_idx[0]], array[children_idx[1]]) == -1
         next_idx = children_idx[0]
@@ -76,8 +76,8 @@ class BinaryMinHeap
     # swap
     array[parent_idx], array[next_idx] = array[next_idx], array[parent_idx]
 
-    # keep heaping down
-    heapify_down(array, next_idx, array.length, &prc)
+    # keep heaping down, make sure use len so that it would use the length of array in argument
+    heapify_down(array, next_idx, len, &prc)
   end
 
   def self.heapify_up(array, child_idx, len = array.length, &prc)
@@ -91,7 +91,7 @@ class BinaryMinHeap
       array[parent_idx], array[child_idx] = array[child_idx], array[parent_idx]
     end
 
-    heapify_up(array, parent_idx, array.length, &prc)
+    heapify_up(array, parent_idx, len, &prc)
 
   end
 end
