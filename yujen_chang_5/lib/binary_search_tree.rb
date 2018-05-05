@@ -32,8 +32,7 @@ class BinarySearchTree
   def delete(value)
     target_node = find(value, node=@root)
     parent = target_node.parent
-    # p "T NODE: ", target_node
-    # p "NODE:", node
+
     return @root = nil if target_node == @root
     return nil if target_node == nil
 
@@ -50,7 +49,7 @@ class BinarySearchTree
     elsif (target_node.left == nil && target_node.right != nil)
       parent.right = target_node.right
       target_node.right.parent = parent
-      
+
     else
       left_max_node = maximum(target_node.left)
       # if left_max_node has left children, it would take left_max_node old place
@@ -83,6 +82,14 @@ class BinarySearchTree
   end
 
   def depth(tree_node = @root)
+    return 0 if tree_node == nil || (tree_node.left == nil && tree_node.right == nil)
+    if (tree_node.right == nil)
+      left_depth = 1 + depth(tree_node.left)
+    elsif (tree_node.left == nil)
+      right_depth = 1 + depth(tree_node.right)
+    else
+      1 + [depth(tree_node.right), depth(tree_node.left)].max
+    end
 
   end
 
