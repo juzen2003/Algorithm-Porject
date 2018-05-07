@@ -18,6 +18,9 @@ class Edge
   end
 
   def destroy!
-
+    @from_vertex.out_edges.delete(self)
+    @to_vertex.in_edges.delete(self)
+    @from_vertex = nil
+    @to_vertex = nil
   end
 end
