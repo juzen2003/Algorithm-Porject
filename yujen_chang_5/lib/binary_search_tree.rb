@@ -134,3 +134,45 @@ class BinarySearchTree
   end
 
 end
+
+# another different way for delete
+# def delete(value)
+#   @root = remove_from_tree(@root, value)
+# end
+#
+# def remove_from_tree(tree_node, value)
+#   if value == tree_node.value
+#     remove(tree_node)
+#   elsif value < tree_node.value
+#     tree_node.left = remove_from_tree(tree_node.left, value)
+#   else
+#     tree_node.right = remove_from_tree(tree_node.right, value)
+#   end
+#
+#   tree_node
+# end
+#
+# def remove(node)
+#   if node.right.nil? && node.left.nil?
+#     node = nil
+#   elsif node.left && node.right.nil?
+#     node = node.left
+#   elsif node.left.nil? && node.right
+#     node = node.right
+#   else
+#     noe = replace_parent(node)
+#   end
+# end
+#
+# def replace_parent(node)
+#   replacement_node = maximum(node.left)
+#
+#   if replace_node.left
+#     node.left.right = replacement_node.left
+#   end
+#
+#   replacement_node.left = node.left
+#   replacement_node.right = node.right
+#
+#   replacement_node
+# end
