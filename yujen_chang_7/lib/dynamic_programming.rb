@@ -84,6 +84,7 @@ class DynamicProgramming
   end
 
   def super_frog_hops_cache_builder(n, k)
+    #  this is extending from frog_cache_builder (fix k = 3) bottom-up
     cache = { 0 => [[]], 1 => [[1]]}
     return cache if n == 1
     k = n if k > n
@@ -102,14 +103,56 @@ class DynamicProgramming
   end
 
   def knapsack(weights, values, capacity)
-
+    cache = knapsack_table(weights, values, capacity)
+    cache[-1][-1]
   end
 
   # Helper method for bottom-up implementation
   def knapsack_table(weights, values, capacity)
+    int_length = weights.length
+    cache = Array.new(capacity + 1) {Array.new(int_length)}
+    cache[0] = [0] * int_length
 
+    (1..capacity).each do |current_cap|
+      (0..int_length-1).each do |len|
+        if len == 0
+          prev_val = 0
+        else
+          prev_val = cache[current_cap][len-1]
+        end
+        current_val = values[len]
+
+        if weights[len] <= current_cap
+          if len == 0
+            val = values[len]
+          else
+            prev_idx = current_cap - weights[len]
+
+            prev_sol = cache[prev_idx][len-1]
+            val = (current_val + prev_sol) > prev_val ? (current_val + prev_sol) : prev_val
+          end
+        else
+          val = prev_val
+        end
+        cache[current_cap][len] = val
+
+        # cache[current_cap][len]
+      end
+    end
+    # p cache
+    cache
   end
+
+
 
   def maze_solver(maze, start_pos, end_pos)
   end
 end
+
+d = DynamicProgramming.new
+values = [1,3,3]
+weights = [2,3,4]
+capacity = 7
+puts d.knapsack(weights, values, capacity)
+p d.knapsack_table(weights, values, capacity)
+# [[0, 0, 0], [0, 0, 0], [1, 1, 1], [1, 3, 3], [1, 3, 3], [1, 4, 4], [1, 4, 4], [1, 4, 6]]
