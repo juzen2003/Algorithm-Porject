@@ -105,6 +105,8 @@ class DynamicProgramming
   end
 
   def knapsack(weights, values, capacity)
+    # this line is not needed
+    # return nil if capacity < 0 || weights.length == 0
     cache = knapsack_table(weights, values, capacity)
     cache[-1][-1]
   end
@@ -172,6 +174,7 @@ class DynamicProgramming
       maze[row - 1][col] = "P"
       maze_solver(maze, [row - 1, col], end_pos)
     else
+      # back tracking steps
       # no where to go, we go back to previous point and visit other " " or "F" points ("P" would not be re-visit), if still no where to go, we move back again to previous points in @maze_cache
       @maze_cache.pop
       maze_solver(maze, @maze_cache[-1], end_pos)
@@ -196,3 +199,93 @@ end
 # puts d.knapsack(weights, values, capacity)
 # p d.knapsack_table(weights, values, capacity)
 # # [[0, 0, 0], [0, 0, 0], [1, 1, 1], [1, 3, 3], [1, 3, 3], [1, 4, 4], [1, 4, 4], [1, 4, 6]]
+
+# code from review session
+#  ==========================================
+# def knapsack(weights, values, capacity)
+#    return nil if capacity < 0 || weights.length == 0
+#    solution_table = knapsack_table(weights, values, capacity)
+#    solution_table[capacity][-1]
+#  end
+#
+#  # Helper method for bottom-up implementation
+#  def knapsack_table(weights, values, capacity)
+#    solution_table = []
+#
+#    # Build solutions for knapsacks of increasing capacity
+#
+#    (0..capacity).each do |i|
+#      solution_table[i] = []
+#      # Go through the weights one by one by index
+#      (0...weights.length).each do |j|
+#        if i == 0
+#          # If the capacity is zero, then 0 is the only value that can be placed into this slot
+#          solution_table[i][j] = 0
+#        elsif j == 0
+#          # For the first item in our list we can check for capacity
+#          # If our weight < capacity, put zero, otherwise put value
+#          solution_table[i][j] = weights[0] > 1 ? 0 : values.first
+#        else
+#          # The first option is the entry considering the previous item at this capacity
+#          option1 = solution_table[i][j - 1]
+#          # The second option (assuming enough capacity) is the maximized value of the smaller bag
+#          option2 = i < weights[j] ? 0 : solution_table[i - weights[j]][j - 1] + values[j]
+#          # Choose max of these options
+#          optimum = [option1, option2].max
+#          solution_table[i][j] = optimum
+#        end
+#      end
+#    end
+#    solution_table
+#  end
+
+
+# def maze_solver(maze, start_pos, end_pos)
+#   @maze_cache[start_pos] = nil
+#   queue = [start_pos]
+#
+#   until queue.empty?
+#     current = queue.pop
+#     break if current == end_pos
+#
+#     get_moves(maze, current).each do |move|
+#       @maze_cache[move] = current
+#       queue << move
+#     end
+#   end
+#
+#   @maze_cache.include?(end_pos) ? path_from_cache(end_pos) : nil
+# end
+#
+# def get_moves(maze, pos)
+#   x, y = pos
+#   moves = []
+#   directions = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+#
+#   directions.each do |new_x, new_y|
+#     next_pos = [ x + new_x, y + new_y]
+#
+#     if is_valid_pos?(maze, next_pos)
+#       moves << next_pos unless @maze_cache.include?(next_pos)
+#     end
+#   end
+#
+#   moves
+# end
+#
+# def is_valid_pos?(maze, pos)
+#   x, y = pos
+#   x >= 0 && y >= 0 && x < maze.length && y < maze.first.length && maze[x][y] != "X"
+# end
+#
+# def path_from_cache(end_pos)
+#   path = []
+#   current = end_pos
+#
+#   while current
+#     path.unshift(current)
+#     current = @maze_cache[current]
+#   end
+#
+#   path
+# end
