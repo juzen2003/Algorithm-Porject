@@ -224,7 +224,7 @@ end
 #        elsif j == 0
 #          # For the first item in our list we can check for capacity
 #          # If our weight < capacity, put zero, otherwise put value
-#          solution_table[i][j] = weights[0] > 1 ? 0 : values.first
+#          solution_table[i][j] = weights[0] > current_capacity ? 0 : values.first
 #        else
 #          # The first option is the entry considering the previous item at this capacity
 #          option1 = solution_table[i][j - 1]
