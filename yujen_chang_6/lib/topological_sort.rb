@@ -1,4 +1,5 @@
 require_relative 'graph'
+require 'set'
 
 # Implementing topological sort using both Khan's and Tarian's algorithms
 
@@ -35,6 +36,56 @@ def topological_sort(vertices)
   end
 
 end
+
+# Tarjan's Algorithm (without catching cycle)
+def topological_sort_tarjan(vertices)
+  order =[]
+  explored = Set.new
+
+  vertices.each do |vertex|
+    dfs!(order, explored, vertex) unless explored.include?(vertex)
+  end
+end
+
+def dfs!(order, explored, vertex)
+  explored.add(vertex)
+
+  vertex.out_edges.each do |edge|
+    to_vertex = edge.to_vertex
+    dfs!(order, explored, to_vertex) unless explored.include?(to_vertex)
+  end
+
+  order.unshift(vertex)
+end
+
+#  Tarjan's Algorithm with cycle catching
+def topological_sort_tarjan_cycle(vertices)
+  order =[]
+  explored = Set.new
+  cycle = false
+  temp = Set.new
+
+  vertices.each do |vertex|
+    cycle = dfs_cycle!(order, explored, vertex, cycle, temp) unless explored.include?(vertex)
+
+    return [] if cycle
+  end
+end
+
+def dfs_cycle!(order, explored, vertex, cycle, tmep)
+  temp.add(vertex)
+
+  vertex.out_edges.each do |edge|
+    to_vertex = edge.to_vertex
+    cycle = dfs_cycle!(order, explored, to_vertex, cycle, temp) unless explored.include?(to_vertex)
+    return true if cycle
+  end
+
+  temp.delete(vertex)
+  explored.add(vertex)
+  order.unshift(vertex)
+end
+
 
 # #  Tarjan's Algorithm
 # def topological_sort(vertices)
