@@ -12,6 +12,8 @@ class DynamicProgramming
     #   2 => [[1,1], [2]],
     #   3 => [[1,1,1], [1,2], [2,1], [3]]
     # }
+
+    @maze_cache = []
   end
 
   def blair_nums(n)
@@ -122,6 +124,10 @@ class DynamicProgramming
         end
         current_val = values[len]
 
+        # for each item consideration:
+        # (1) previous item's value at current capacity
+        # (2) previous item's solution from smaller bag (capacity - current_capacity) + current_item value
+        # for first item, it's always itself
         if weights[len] <= current_cap
           if len == 0
             val = values[len]
@@ -131,28 +137,62 @@ class DynamicProgramming
             prev_sol = cache[prev_idx][len-1]
             val = (current_val + prev_sol) > prev_val ? (current_val + prev_sol) : prev_val
           end
+
         else
           val = prev_val
         end
         cache[current_cap][len] = val
-
-        # cache[current_cap][len]
       end
     end
     # p cache
     cache
   end
 
-
-
   def maze_solver(maze, start_pos, end_pos)
+    @maze_cache << start_pos if @maze_cache[-1] != start_pos
+    return [start_pos] if start_pos == end_pos
+
+    # row = start_pos[0]
+    # col = start_pos[1]
+    row, col = start_pos
+    max_row = maze.length
+    max_col = maze[0].length
+
+    # use "P" to mark the visited point so that we don't re-visit again
+    if ["F", " "].include?(maze[row][col + 1]) && (col + 1) <= max_col
+      maze[row][col + 1] = "P"
+      maze_solver(maze, [row, col + 1], end_pos)
+    elsif ["F", " "].include?(maze[row + 1][col]) && (row + 1) <= max_row
+      maze[row + 1][col] = "P"
+      maze_solver(maze, [row + 1, col], end_pos)
+    elsif ["F", " "].include?(maze[row][col - 1])
+      maze[row][col - 1] = "P"
+      maze_solver(maze, [row, col - 1], end_pos) && (col-1) >= 0
+    elsif ["F", " "].include?(maze[row - 1][col]) && (row-1) >= 0
+      maze[row - 1][col] = "P"
+      maze_solver(maze, [row - 1, col], end_pos)
+    else
+      # no where to go, we go back to previous point and visit other " " or "F" points ("P" would not be re-visit)
+      @maze_cache.pop
+      maze_solver(maze, @maze_cache[-1], end_pos)
+    end
+
+    @maze_cache
   end
+
 end
 
-d = DynamicProgramming.new
-values = [1,3,3]
-weights = [2,3,4]
-capacity = 7
-puts d.knapsack(weights, values, capacity)
-p d.knapsack_table(weights, values, capacity)
-# [[0, 0, 0], [0, 0, 0], [1, 1, 1], [1, 3, 3], [1, 3, 3], [1, 4, 4], [1, 4, 4], [1, 4, 6]]
+# d = DynamicProgramming.new
+# m = [['X', 'X', 'X', 'X'],
+#     ['X', 'S', ' ', 'X'],
+#     ['X', 'X', 'F', 'X']]
+# start_pos = [1,1]
+# end_pos = [2,2]
+# p d.maze_solver(m, start_pos, end_pos)
+
+# values = [1,3,3]
+# weights = [2,3,4]
+# capacity = 7
+# puts d.knapsack(weights, values, capacity)
+# p d.knapsack_table(weights, values, capacity)
+# # [[0, 0, 0], [0, 0, 0], [1, 1, 1], [1, 3, 3], [1, 3, 3], [1, 4, 4], [1, 4, 4], [1, 4, 6]]
