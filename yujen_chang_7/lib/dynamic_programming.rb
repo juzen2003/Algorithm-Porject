@@ -172,7 +172,7 @@ class DynamicProgramming
       maze[row - 1][col] = "P"
       maze_solver(maze, [row - 1, col], end_pos)
     else
-      # no where to go, we go back to previous point and visit other " " or "F" points ("P" would not be re-visit)
+      # no where to go, we go back to previous point and visit other " " or "F" points ("P" would not be re-visit), if still no where to go, we move back again to previous points in @maze_cache
       @maze_cache.pop
       maze_solver(maze, @maze_cache[-1], end_pos)
     end
